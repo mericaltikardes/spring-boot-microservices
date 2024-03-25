@@ -1,5 +1,6 @@
 package com.mericaltikardes.employeeservice.controller;
 
+import com.mericaltikardes.employeeservice.dto.APIResponseDto;
 import com.mericaltikardes.employeeservice.dto.EmployeeDto;
 import com.mericaltikardes.employeeservice.entity.Employee;
 import com.mericaltikardes.employeeservice.service.EmployeeService;
@@ -25,7 +26,7 @@ public class EmployeeController {
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public EmployeeDto getEmployeeById(@PathVariable("id") Long EmployeeId){
+    public APIResponseDto getEmployeeById(@PathVariable("id") Long EmployeeId){
         return employeeService.getEmployeeById(EmployeeId);
     }
 }
