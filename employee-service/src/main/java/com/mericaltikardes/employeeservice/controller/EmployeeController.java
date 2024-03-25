@@ -3,8 +3,10 @@ package com.mericaltikardes.employeeservice.controller;
 import com.mericaltikardes.employeeservice.dto.EmployeeDto;
 import com.mericaltikardes.employeeservice.entity.Employee;
 import com.mericaltikardes.employeeservice.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +20,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody @Valid EmployeeDto employeeDto){
         EmployeeDto savedEmployee= employeeService.saveEmployee(employeeDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }

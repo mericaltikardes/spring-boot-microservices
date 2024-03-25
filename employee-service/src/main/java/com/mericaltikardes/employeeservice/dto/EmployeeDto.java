@@ -1,10 +1,13 @@
 package com.mericaltikardes.employeeservice.dto;
 
+import jakarta.validation.constraints.Email;
+
 public class EmployeeDto {
 
     private Long id;
     private String firstName;
     private String lastName;
+    @Email(regexp = "^(.+)@(\\S+)$",message = "Invalid Email Format")
     private String email;
 
     public EmployeeDto(Long id, String firstName, String lastName, String email) {

@@ -1,10 +1,15 @@
 package com.mericaltikardes.employeeservice.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.lang.NonNull;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "employees")
-public class Employee {
+public class Employee{
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

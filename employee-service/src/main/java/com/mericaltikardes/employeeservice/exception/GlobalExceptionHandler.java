@@ -2,6 +2,7 @@ package com.mericaltikardes.employeeservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -34,4 +35,16 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidEmailFormat(MethodArgumentNotValidException exception,
+                                                                 WebRequest webRequest){
+        ErrorDetails errorDetails=new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getFieldError().getDefaultMessage(),
+                webRequest.getDescription(false),
+                "Invalid Email Adress"
+        );
+        return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
+    }
+
 }
