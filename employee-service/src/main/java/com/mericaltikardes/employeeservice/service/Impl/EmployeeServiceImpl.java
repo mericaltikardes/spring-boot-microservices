@@ -8,6 +8,7 @@ import com.mericaltikardes.employeeservice.exception.EmailAlreadyExistException;
 import com.mericaltikardes.employeeservice.exception.ResourceNotFoundException;
 import com.mericaltikardes.employeeservice.mapper.EmployeeMapper;
 import com.mericaltikardes.employeeservice.repository.EmployeeRepository;
+import com.mericaltikardes.employeeservice.service.APIClient;
 import com.mericaltikardes.employeeservice.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
    // private RestTemplate restTemplate;
 
-    private WebClient webClient;
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, WebClient webClient) {
+  //  private WebClient webClient;
+    private APIClient apiClient;
+
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, APIClient apiClient) {
         this.employeeRepository = employeeRepository;
-        this.webClient = webClient;
+        this.apiClient = apiClient;
     }
 
     @Override
@@ -51,11 +54,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                DepartmentDto.class);
         //DepartmentDto departmentDto = responseEntity.getBody();
 
-        DepartmentDto departmentDto=webClient.get()
-                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-                .retrieve()
-                .bodyToMono(DepartmentDto.class)
-                .block();
+//        DepartmentDto departmentDto=webClient.get()
+//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+//                .retrieve()
+//                .bodyToMono(DepartmentDto.class)
+//                .block();
+        DepartmentDto departmentDto = apiClient.getByDepartmentId(employee.getDepartmentCode());
         EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
 
         APIResponseDto apiResponseDto=new APIResponseDto(employeeDto,departmentDto);
