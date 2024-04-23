@@ -3,21 +3,17 @@ package com.mericaltikardes.employeeservice.service.Impl;
 import com.mericaltikardes.employeeservice.dto.APIResponseDto;
 import com.mericaltikardes.employeeservice.dto.DepartmentDto;
 import com.mericaltikardes.employeeservice.dto.EmployeeDto;
+import com.mericaltikardes.employeeservice.dto.OrganizationDto;
 import com.mericaltikardes.employeeservice.entity.Employee;
 import com.mericaltikardes.employeeservice.exception.EmailAlreadyExistException;
 import com.mericaltikardes.employeeservice.exception.ResourceNotFoundException;
 import com.mericaltikardes.employeeservice.mapper.EmployeeMapper;
 import com.mericaltikardes.employeeservice.repository.EmployeeRepository;
-import com.mericaltikardes.employeeservice.service.APIClient;
+import com.mericaltikardes.employeeservice.service.DepartmentServiceAPIClient;
 import com.mericaltikardes.employeeservice.service.EmployeeService;
+import com.mericaltikardes.employeeservice.service.OrganizationServiceAPIClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -27,11 +23,15 @@ public class EmployeeServiceImpl implements EmployeeService {
    // private RestTemplate restTemplate;
 
   //  private WebClient webClient;
-    private APIClient apiClient;
+    private DepartmentServiceAPIClient departmentServiceAPIClient;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, APIClient apiClient) {
+    private OrganizationServiceAPIClient organizationServiceAPIClient;
+
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentServiceAPIClient apiClient,
+                               OrganizationServiceAPIClient organizationServiceAPIClient) {
         this.employeeRepository = employeeRepository;
-        this.apiClient = apiClient;
+        this.departmentServiceAPIClient = apiClient;
+        this.organizationServiceAPIClient = organizationServiceAPIClient;
     }
 
     @Override
@@ -60,10 +60,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                .retrieve()
 //                .bodyToMono(DepartmentDto.class)
 //                .block();
-        DepartmentDto departmentDto = apiClient.getByDepartmentId(employee.getDepartmentCode());
+        DepartmentDto departmentDto = departmentServiceAPIClient.getByDepartmentId(employee.getDepartmentCode());
         EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+        OrganizationDto organizationDto= organizationServiceAPIClient.getByOrganizationCode(employee.getOrganizationCode());
 
-        APIResponseDto apiResponseDto=new APIResponseDto(employeeDto,departmentDto);
+        APIResponseDto apiResponseDto=new APIResponseDto(employeeDto,departmentDto,organizationDto);
         return apiResponseDto;
     }
     public APIResponseDto getDefaultDepartment(Long id,Exception e) {
@@ -75,7 +76,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         departmentDto.setDepartmentCode("RD0001");
         departmentDto.setDepartmentDescription("Reasearch and Development Department");
         EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
-        APIResponseDto apiResponseDto=new APIResponseDto(employeeDto,departmentDto);
+        OrganizationDto organizationDto=new OrganizationDto();
+        organizationDto.setOrganizationName("Default Organization Name");
+        organizationDto.setOrganizationDescription("Default Description");
+        organizationDto.setOrganizationCode("Default Code");
+        APIResponseDto apiResponseDto=new APIResponseDto(employeeDto,departmentDto,organizationDto);
         return apiResponseDto;
     }
 }
